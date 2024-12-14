@@ -87,54 +87,25 @@ const couples: Ref<Couple[]> = ref([] as Couple[]);
 
 const lock = ref(false);
 
-const getPlayerById = (id: string): Player | undefined => {
-    return players.value.find(x => x.id == id);
-}
+const getPlayerById = (id: string): Player | undefined => players.value.find(x => x.id == id);
+const shouldShowDuo = (player: Player): boolean => !props.data.myCouple && !props.data.myRequests?.some(req => req.from === player.id || req.to === player.id);
+const shouldShowAccept = (player: Player) => props.data.myRequests?.map(x => x.from).includes(player.id) ?? false;
+const shouldShowCancel = (player: Player): boolean => props.data.myRequests?.map(x => x.to).includes(player.id) ?? false;
+const sendRequest = (player: Player) => handleRequest(player, "send");
+const cancelRequest = (player: Player) => handleRequest(player, "cancel");
+const acceptRequest = (player: Player) => handleRequest(player, "accept");
 
-const shouldShowDuo = (player: Player): boolean => {
-    if (props.data.myCouple) return false;
-
-    if (props.data.myRequests?.map(x => x.from).concat(props.data.myRequests?.map(x => x.to)).includes(player.id)) {
-        return false;
+const handleRequest = async (player: Player, action: "send" | "cancel" | "accept") => {
+    lock.value = true;
+    if (action === "send") {
+        await dataService.sendRequest(player.id)
+    } else if (action === "cancel") {
+        await dataService.cancelRequest(player.id)
+    } else if (action === "accept") {
+        await dataService.acceptRequest(player.id)
     }
 
-    return true;
-}
-const sendRequest = (player: Player) => {
-    lock.value = true;
-    dataService.sendRequest(player.id).then(() => emits("reload"));
-}
-
-const shouldShowCancel = (player: Player): boolean => {
-    if (props.data.myRequests?.map(x => x.to).includes(player.id)) {
-        return true;
-    }
-
-    return false;
-}
-
-const cancelRequest = async (player: Player) => {
-    lock.value = true;
-    await dataService.cancelRequest(player.id)
-        .then(() => {
-            emits("reload");
-        })
-}
-
-const shouldShowAccept = (player: Player) => {
-    if (props.data.myRequests?.map(x => x.from).includes(player.id)) {
-        return true;
-    }
-
-    return false;
-}
-
-const acceptRequest = async (player: Player) => {
-    lock.value = true;
-    await dataService.acceptRequest(player.id)
-        .then(() => {
-            emits("reload");
-        })
+    emits("reload")
 }
 
 onBeforeMount(async () => {

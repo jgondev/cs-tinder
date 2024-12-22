@@ -5,7 +5,7 @@ const { eq, and, or } = require("drizzle-orm");
 
 class BaseRepo {
   constructor(tableName) {
-    const client = createClient({ url: process.env.TURSO_DB_URL, authToken: process.env.TURSO_AUTH_TOKEN });
+    const client = createClient({ url: process.env.TURSO_DB_URL_DEV, authToken: process.env.TURSO_AUTH_TOKEN_DEV });
 
     this.db = drizzle(client);
     this.table = SchemaService.getTable(tableName);

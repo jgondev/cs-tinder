@@ -1,6 +1,7 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const twitchService = require("./twitch.service");
+const faceitService = require('./faceit.service');
 const Repo = require("./repo.service");
 
 const userDb = new Repo("user");
@@ -23,20 +24,16 @@ exports.login = async (req, res) => {
     }
 
     try {
-      const user = await userDb.put({ ...me, key: me.id });
-      const jwtToken = jwt.sign({ id: me.id }, process.env.SECRET, {
+      const user = await userDb.put({ ...me, key: me.display_name });
+      const jwtToken = jwt.sign({ id: me.display_name }, process.env.SECRET, {
         expiresIn: process.env.TOKEN_EXPIRATION,
       });
 
       try {
-        await tokenDb.put({ key: me.id, token: jwtToken });
+        await tokenDb.put({ key: user.key, token: jwtToken });
         return res.send({
           result: {
-            user: {
-              id: me.id,
-              display_name: me.display_name,
-              profile_image_url: me.profile_image_url,
-            },
+            user,
             token: jwtToken,
           },
         });
@@ -54,12 +51,65 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.faceit = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await userDb.get(userId);
+    if (!user) {
+      return res.status(404).send({ error: 'User not found.' });
+    }
+
+    const { code, codeVerifier } = req.body;
+
+    if (!code || !codeVerifier) {
+      return res.status(400).send({ error: 'Missing code or codeVerifier.' });
+    }
+
+    const token = await faceitService.getToken(code, codeVerifier);
+
+    const faceitUser = await faceitService.me(token.access_token);
+
+    if (!faceitUser) {
+      console.error('Couldn\'t retrieve faceit user information.');
+      return res.send({ result: null });
+    }
+
+    try {
+      const updatedUser = await userDb.put({ ...user, faceit: faceitUser.nickname });
+      const jwtToken = jwt.sign({ id: updatedUser.key }, process.env.SECRET, {
+        expiresIn: process.env.TOKEN_EXPIRATION,
+      });
+
+      try {
+        await tokenDb.put({ key: updatedUser.key, token: jwtToken });
+        return res.send({
+          result: {
+            user: updatedUser,
+            token: jwtToken,
+          },
+        });
+      } catch (tokenDbError) {
+        console.error('Failed to save token to tokenDb:', tokenDbError);
+        return res.send({ result: null });
+      }
+    } catch (dbError) {
+      console.error('Error updating user with Faceit information:', dbError);
+      return res.send({ result: null });
+    }
+  } catch (error) {
+    console.error('Error linking with Faceit:', error.message);
+    return res.send({ result: null });
+  }
+};
+
+
 exports.getPlayers = async (req, res) => {
   try {
     const users = await userDb.fetch();
+    const validUsers = users.filter(x => x.faceit);
 
-    if (users && users.length > 0) {
-      const players = users.map((x) => ({
+    if (validUsers && validUsers.length > 0) {
+      const players = validUsers.map((x) => ({
         id: x.id,
         name: x.display_name,
         image: x.profile_image_url,
@@ -354,4 +404,3 @@ exports.systemUpdates = async (req, res) => {
     res.status(500).send({ error: "Failed to retrieve updates" });
   }
 };
-

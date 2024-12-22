@@ -1,16 +1,17 @@
 <template>
     <div class="w-full bg-base-100 rounded-2xl px-3 py-10 shadow-lg">
-        <h1 class="text-5xl font-bold text-center">III Torneo de subs: El Pueblo</h1>
-        <h2 class="text-lg font-bold text-center mt-10 mb-2">Límite de inscripción:</h2>
-        <Countdown :limit="new Date(2024, 11, 20, 17, 0, 0)" />
-        <!-- <div class="text-lg font-semibold text-center mt-10">
-            El ❤ está desactivado temporalmente, de momento vete inscribiéndote
-        </div> -->
+        <h1 class="text-5xl font-bold text-center">IV Torneo de subs: El Pueblo</h1>
+        <h2 class="text-lg font-bold text-center mt-10 mb-2">{{ !id.loggedIn ? "Límite de inscripción:" : "El torneo empieza en" }}</h2>
+        <Countdown :limit="new Date(2025, 0, 6, 17, 0, 0)" />
         <template v-if="!id.loggedIn">
+            <div class="text-lg font-semibold text-center mt-10">
+                <p class="font-semibold underline">IMPORTANTE</p>
+                <p class="font-light">Para inscribirte necesitas tener previamente cuentas en <a
+                        class="text-purple-600 underline" href="https://twitch.tv" target="_blank">Twitch</a> y <a
+                        class="text-orange-600 underline" href="https://faceit.com" target="_blank">Faceit</a></p>
+            </div>
             <div class="flex flex-col justify-center items-center mt-10">
-                <a :href="twitchUrl"><button class="btn btn-lg btn-wide btn-primary text-white">Participa</button></a>
-                <div class="divider my-10">O</div>
-                <a :href="twitchUrl"><button class="btn btn-sm btn-secondary text-white">INICIA SESIÓN</button></a>
+                <a :href="twitchUrl"><button class="btn btn-lg btn-wide btn-primary text-white">ENTRAR</button></a>
             </div>
         </template>
     </div>
@@ -59,9 +60,9 @@ const load = async () => {
     }
 }
 
-let twitchUrl: string;
+const twitchUrl = ref();
 onBeforeMount(async () => {
-    twitchUrl = twitchService.getAuthorizeUrl('/');
+    twitchUrl.value = await twitchService.getAuthorizeUrl('/');
     await load();
 });
 

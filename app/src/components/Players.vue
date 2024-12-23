@@ -28,6 +28,11 @@
                 <div class="player-name text-center font-bold mb-3 cursor-default" :title="player.name">{{ player.name
                     }}
                 </div>
+                <div class="flex items-center gap-1 mb-3">
+                    <img class="w-6" :src="`/src/assets/faceit/lvl${+player.level}.svg`" />
+                    <img class="w-6" src="../assets/faceit/elo.svg" />
+                    <span class="font-bold">{{ +player.elo }}</span>
+                </div>
                 <div class="avatar">
                     <div class="mask mask-squircle">
                         <img :src="player.image" />

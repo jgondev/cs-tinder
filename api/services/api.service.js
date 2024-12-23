@@ -25,9 +25,25 @@ exports.login = async (req, res) => {
 
     try {
       const user = await userDb.put({ ...me, key: me.display_name });
-      const jwtToken = jwt.sign({ id: me.display_name }, process.env.SECRET, {
+      const jwtToken = jwt.sign({ id: user.key }, process.env.SECRET, {
         expiresIn: process.env.TOKEN_EXPIRATION,
       });
+
+
+      if (user.faceit) {
+        try {
+          const { level, elo } = await faceitService.cs2info(user.faceit);
+
+          try {
+            await userDb.put({ ...user, faceit_level: level, faceit_elo: elo });
+          } catch (error) {
+            console.error('Error updating Faceit Info:', error);
+          }
+        }
+        catch (error) {
+          console.error('Error obtaining Faceit info:', error);
+        }
+      }
 
       try {
         await tokenDb.put({ key: user.key, token: jwtToken });
@@ -68,6 +84,7 @@ exports.faceit = async (req, res) => {
     const token = await faceitService.getToken(code, codeVerifier);
 
     const faceitUser = await faceitService.me(token.access_token);
+    const { level, elo } = await faceitService.cs2info(faceitUser.nickname);
 
     if (!faceitUser) {
       console.error('Couldn\'t retrieve faceit user information.');
@@ -75,7 +92,7 @@ exports.faceit = async (req, res) => {
     }
 
     try {
-      const updatedUser = await userDb.put({ ...user, faceit: faceitUser.nickname });
+      const updatedUser = await userDb.put({ ...user, faceit: faceitUser.nickname, faceit_level: level, faceit_elo: elo });
       const jwtToken = jwt.sign({ id: updatedUser.key }, process.env.SECRET, {
         expiresIn: process.env.TOKEN_EXPIRATION,
       });
@@ -113,6 +130,9 @@ exports.getPlayers = async (req, res) => {
         id: x.id,
         name: x.display_name,
         image: x.profile_image_url,
+        faceit: x.faceit,
+        level: x.faceit_level,
+        elo: x.faceit_elo,
       }));
 
       const couples = await couplesDb.fetch();
@@ -402,5 +422,28 @@ exports.systemUpdates = async (req, res) => {
     }
   } catch (error) {
     res.status(500).send({ error: "Failed to retrieve updates" });
+  }
+};
+
+exports.faceitUpdate = async (req, res) => {
+  try {
+    const user = await userDb.get(req.userId);
+
+    try {
+      const { level, elo } = await faceitService.cs2info(user.faceit);
+
+      try {
+        const updatedUser = await userDb.put({ ...user, faceit_level: level, faceit_elo: elo });
+        res.send({ result: updatedUser });
+      } catch (error) {
+        res.status(500).send('Error updating Faceit Info:', error);
+      }
+    }
+    catch (error) {
+      res.status(500).send('Error obtaining Faceit info:', error);
+    }
+  }
+  catch (error) {
+    res.status(500).send({ error });
   }
 };

@@ -8,12 +8,17 @@ export type User = {
     display_name: string;
     profile_image_url: string;
     faceit: string;
+    faceit_level: string;
+    faceit_elo: string;
 }
 
 export type Player = {
     id: string;
     name: string;
     image: string;
+    faceit: string;
+    level: string;
+    elo: string;
 }
 
 export type Request = {

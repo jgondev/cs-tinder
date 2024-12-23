@@ -4,8 +4,10 @@ class FaceitService {
     config = {
         clientId: process.env.FACEIT_CLIENT_ID,
         clientSecret: process.env.FACEIT_CLIENT_SECRET,
+        apiKey: process.env.FACEIT_API_KEY,
         redirectUri: process.env.FACEIT_REDIRECT_URI,
         tokenUrl: "https://api.faceit.com/auth/v1/oauth/token",
+        dataUrl: "https://open.faceit.com/data/v4"
     };
 
     async getToken(code, codeVerifier) {
@@ -56,6 +58,28 @@ class FaceitService {
             return {
                 nickname: response.data.nickname
             };
+        } catch (error) {
+            console.error("Error obtaining Faceit user data:", {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data
+            });
+            throw new Error("Error obtaining Faceit user data.");
+        }
+    }
+
+    async cs2info(user) {
+        const headers = {
+            "Authorization": `Bearer ${this.config.apiKey}`,
+            "Accept": "application/json",
+            "Accept-Encoding": "identity"
+        };
+
+        try {
+            const response = await axios.get(`${this.config.dataUrl}/players`, { headers, params: { nickname: user } });
+            const level = response.data.games.cs2?.skill_level ?? '3';
+            const elo = response.data.games.cs2?.faceit_elo ?? '1000';
+            return { level, elo };
         } catch (error) {
             console.error("Error obtaining Faceit user data:", {
                 message: error.message,

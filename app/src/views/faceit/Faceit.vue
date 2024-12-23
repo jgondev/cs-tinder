@@ -7,7 +7,7 @@
         </p>
 
         <div class="text-center">
-            <a :href="faceitUrl" class="btn btn-primary text-white">
+            <a :href="faceitUrl" class="btn btn-accent text-white">
                 Conectar con Faceit
             </a>
         </div>

@@ -1,9 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["index.html","./src/**/*.{html,ts,vue}"],
+  content: ["index.html", "./src/**/*.{html,ts,vue}"],
   darkMode: "class",
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Golos Text', 'sans-serif'], // Configura Libre Franklin como fuente principal
+      },
+    },
   },
   plugins: [require("daisyui")],
   variants: {
@@ -13,13 +17,12 @@ module.exports = {
   },
   daisyui: {
     styled: true,
-    themes: ["cmyk"],
+    themes: ["business"],
     base: true,
     utils: true,
     logs: true,
     rtl: false,
     prefix: "",
-    darkTheme: "dracula",
   },
   safelist: [{ pattern: /^alert-/ }],
 };

@@ -127,7 +127,7 @@ exports.getPlayers = async (req, res) => {
 
     if (validUsers && validUsers.length > 0) {
       const players = validUsers.map((x) => ({
-        id: x.id,
+        id: x.key,
         name: x.display_name,
         image: x.profile_image_url,
         faceit: x.faceit,

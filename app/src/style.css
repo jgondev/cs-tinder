@@ -1,9 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .w-md {
-    width: 768px;
+    width: 1024px;
   }
 }

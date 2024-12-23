@@ -1,6 +1,6 @@
 import { BaseSocialService, ISocialConfig } from './social.service';
 import apiService from './api.service';
-import { Identity } from '../types';
+import { Identity, User } from '../types';
 
 export class FaceitService extends BaseSocialService {
     constructor() {
@@ -17,6 +17,10 @@ export class FaceitService extends BaseSocialService {
 
     public async link(code: string, codeVerifier?: string): Promise<Identity> {
         return await apiService.post<Identity>(`/faceit`, { code, codeVerifier });
+    }
+
+    public async update(): Promise<User> {
+        return await apiService.post<User>('/faceit/update');
     }
 }
 

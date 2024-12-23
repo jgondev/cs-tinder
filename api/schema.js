@@ -4,11 +4,13 @@ const t = require("drizzle-orm/sqlite-core");
 // Tabla de usuarios
 const user = table("user", {
     key: t.text("key").primaryKey(),
-    faceit: t.text("faceit"),
     id: t.text("id"),
     login: t.text("login"),
     display_name: t.text("display_name"),
     profile_image_url: t.text("profile_image_url"),
+    faceit: t.text("faceit"),
+    faceit_level: t.text("faceit_level"),
+    faceit_elo: t.text("faceit_elo"),
 });
 
 // Tabla de parejas

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Identity } from "../core/types";
+import { Identity, User } from "../core/types";
 
 export const useIdentityStore = defineStore("identity", {
     state: () => ({
@@ -7,11 +7,16 @@ export const useIdentityStore = defineStore("identity", {
     }),
     getters: {
         loggedIn: (state) => state.id?.token != undefined,
+        user: (state) => state.id?.user,
     },
     actions: {
         setId(id: Identity) {
             localStorage.setItem('id', JSON.stringify(id));
             this.id = id;
+        },
+        updateUser(user: User) {
+            this.id.user = user;
+            this.setId(this.id);
         }
     },
 });

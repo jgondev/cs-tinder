@@ -2,7 +2,7 @@
     <div v-if="(players.length > 0)" class="mt-5 w-full bg-base-100 px-3 sm:px-10 py-10 shadow-lg"
         :class="lock ? 'pointer-events-none opacity-50' : ''">
         <h2 class="text-4xl font-bold mb-10 text-center">Agentes libres</h2>
-        <div class="grid gap-4 grid-cols-4">
+        <div v-if="singlePlayers.length > 0" class="grid gap-4 grid-cols-4">
             <div v-for="player in singlePlayers"
                 class="relative col-span-2 lg:col-span-1 p-5 shadow border-orange-900 border-2 border-solid flex flex-col items-center">
                 <div class="player-name flex flex-row justify-center font-semibold" :title="player.name">
@@ -50,8 +50,11 @@
                 </template>
             </div>
         </div>
+        <div v-else class="text-center text-sm text-base-400">
+            Aún no hay jugadores registrados
+        </div>
         <h2 class="text-4xl font-bold mb-10 mt-20 text-center">Equipos</h2>
-        <div class="grid gap-4 grid-cols-4">
+        <div v-if="couples.length > 0" class="grid gap-4 grid-cols-4">
             <div v-for="couple in couples"
                 class="relative col-span-4 lg:col-span-2 p-3 shadow border-orange-900 rounded-sm border-2 border-solid ">
                 <div class="flex flex-row justify-evenly">
@@ -109,7 +112,9 @@
                 </div>
             </div>
         </div>
-
+        <div v-else class="text-center text-sm text-base-400">
+            Aún no hay equipos registrados
+        </div>
     </div>
 </template>
 

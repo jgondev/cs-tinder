@@ -5,8 +5,8 @@ import { Identity, User } from '../types';
 export class FaceitService extends BaseSocialService {
     constructor() {
         const config = {
-            clientId: '9b931ab4-dce7-4d71-9504-d7a0a3d683e0',
-            redirectUri: 'https://localhost:4006/auth/faceit',
+            clientId: import.meta.env.VITE_FACEIT_CLIENT_ID,
+            redirectUri: import.meta.env.VITE_FACEIT_REDIRECT_URI,
             responseType: 'code',
             scope: 'openid',
             authorizeUrl: 'https://accounts.faceit.com',

@@ -12,6 +12,12 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV="production"
 
+ENV VITE_API_URL="https://cstinder-api.fly.dev/api"
+ENV VITE_API_SSE_URL="https://cstinder-api.fly.dev/sse"
+ENV VITE_FACEIT_REDIRECT_URI="https://cs-tinder.fly.dev/auth/faceit"
+ENV VITE_FACEIT_CLIENT_ID="fead60b0-d55c-4e3a-a323-221b2876721c"
+ENV VITE_TWITCH_REDIRECT_URI="https://cs-tinder.fly.dev/auth/twitch"
+ENV VITE_TWITCH_CLIENT_ID="60o8krmwt9zra3887a3648k3solizu"
 
 # Throw-away build stage to reduce size of final image
 FROM base as build

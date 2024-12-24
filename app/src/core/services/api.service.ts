@@ -1,8 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosStatic } from 'axios';
 import { Identity } from '../types';
 
-//axios.defaults.baseURL = 'https://cstinder-api.fly.dev/api';
-axios.defaults.baseURL = 'http://localhost:8080/api';
+axios.defaults.baseURL = import.meta.env.VITE_API_URL as string;
 
 export class BaseApiService {
     public axios: AxiosStatic = axios;

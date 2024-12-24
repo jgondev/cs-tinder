@@ -4,7 +4,7 @@
         <h2 class="text-4xl font-bold mb-10 text-center">Agentes libres</h2>
         <div v-if="singlePlayers.length > 0" class="grid gap-4 grid-cols-4">
             <div v-for="player in singlePlayers"
-                class="relative col-span-2 lg:col-span-1 p-5 shadow border-orange-900 border-2 border-solid flex flex-col items-center">
+                class="relative col-span-4 sm:col-span-2 lg:col-span-1 p-5 shadow border-orange-900 border-2 border-solid flex flex-col items-center">
                 <div class="player-name flex flex-row justify-center font-semibold" :title="player.name">
                     <img src="../assets/twitch.svg" class="w-3 mr-1" />
                     <span>{{ player.name }}</span>
@@ -14,7 +14,7 @@
                     <span>{{ player.faceit }}</span>
                 </div>
                 <div class="flex items-center justify-center gap-1 mb-3">
-                    <img class="w-6" :src="`/src/assets/faceit/lvl${+player.level}.svg`" />
+                    <img class="w-6" :src="getLevelImage(+player.level)" />
                     <img class="w-6" src="../assets/faceit/elo.svg" />
                     <span class="font-semibold">{{ +player.elo }}</span>
                 </div>
@@ -69,12 +69,11 @@
                             <span>{{ getPlayerById(couple.player1)!.faceit }}</span>
                         </div>
                         <div class="flex items-center justify-center gap-1 mb-3">
-                            <img class="w-6"
-                                :src="`/src/assets/faceit/lvl${+getPlayerById(couple.player1)!.level}.svg`" />
+                            <img class="w-6" :src="getLevelImage(+getPlayerById(couple.player1)!.level)" />
                             <img class="w-6" src="../assets/faceit/elo.svg" />
                             <span class="font-semibold">{{ +getPlayerById(couple.player1)!.elo }}</span>
                         </div>
-                        <div class="avatar max-w-[10rem]">
+                        <div class="avatar max-w-[8rem] sm:max-w-[10rem]">
                             <div class="mask mask-circle border-2 border-solid border-base-200 rounded-full">
                                 <img :src="getPlayerById(couple.player1)!.image" />
                             </div>
@@ -92,12 +91,11 @@
                             <span>{{ getPlayerById(couple.player2)!.faceit }}</span>
                         </div>
                         <div class="flex items-center justify-center gap-1 mb-3">
-                            <img class="w-6"
-                                :src="`/src/assets/faceit/lvl${+getPlayerById(couple.player1)!.level}.svg`" />
+                            <img class="w-6" :src="getLevelImage(+getPlayerById(couple.player2)!.level)" />
                             <img class="w-6" src="../assets/faceit/elo.svg" />
-                            <span class="font-semibold">{{ +getPlayerById(couple.player1)!.elo }}</span>
+                            <span class="font-semibold">{{ +getPlayerById(couple.player2)!.elo }}</span>
                         </div>
-                        <div class="avatar max-w-[10rem]">
+                        <div class="avatar max-w-[8rem] sm:max-w-[10rem]">
                             <div class="mask mask-circle border-2 border-solid border-base-200 rounded-full">
                                 <img :src="getPlayerById(couple.player2)!.image" />
                             </div>
@@ -123,6 +121,7 @@ import { onBeforeMount, Ref, ref } from "vue";
 import { Player, Couple, Request, PlayersResponse } from "../core/types";
 import dataService from "../core/services/data.service";
 import { useIdentityStore } from "../stores/identity.store";
+import { getLevelImage } from '../core/services/media.service';
 
 const state = useIdentityStore();
 

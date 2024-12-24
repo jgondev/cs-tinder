@@ -4,9 +4,8 @@ export class TwitchService extends BaseSocialService {
 
     constructor() {
         const config = {
-            clientId: '60o8krmwt9zra3887a3648k3solizu',
-            //redirectUri: 'https://cs-tinder.fly.dev/auth/twitch',
-            redirectUri: 'https://localhost:4006/auth/twitch',
+            clientId: import.meta.env.VITE_TWITCH_CLIENT_ID,
+            redirectUri: import.meta.env.VITE_TWITCH_REDIRECT_URI,
             responseType: 'code',
             scope: 'user:read:subscriptions',
             authorizeUrl: 'https://id.twitch.tv/oauth2/authorize',

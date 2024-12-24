@@ -123,7 +123,7 @@ exports.faceit = async (req, res) => {
 exports.getPlayers = async (req, res) => {
   try {
     const users = await userDb.fetch();
-    const validUsers = users.filter(x => x.faceit);
+    const validUsers = users?.filter(x => x.faceit);
 
     if (validUsers && validUsers.length > 0) {
       const players = validUsers.map((x) => ({

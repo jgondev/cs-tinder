@@ -11,7 +11,11 @@ app.use(cors({
 }));
 
 //routes
-require("./routes")(app);
+require("./routes/routes")(app);
+
+// SSE routes
+const sseRoutes = require("./routes/sse");
+app.use("/sse", sseRoutes);
 
 app.get("/", (req, res) => {
   res.send("Bienvenido! 🚀");

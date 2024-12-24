@@ -1,4 +1,5 @@
 const SchemaService = require('./schema.service');
+const { broadcast } = require("./sse.service");
 const { drizzle } = require("drizzle-orm/libsql");
 const { createClient } = require("@libsql/client");
 const { eq, and, or } = require("drizzle-orm");
@@ -127,10 +128,13 @@ class BaseRepo {
 
   async _updateSystemTimestamp() {
     try {
+      const timestamp = Date.now();
       await this.db
         .update(this.systemTable)
-        .set({ value: Date.now() })
+        .set({ value: timestamp })
         .where(eq(this.systemTable.key, "updated"));
+
+      broadcast({ key: "updated", value: timestamp });
     } catch (error) {
       console.error("Error updating system timestamp:", error);
     }

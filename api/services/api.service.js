@@ -447,3 +447,44 @@ exports.faceitUpdate = async (req, res) => {
     res.status(500).send({ error });
   }
 };
+
+exports.faceitTeams = async (req, res) => {
+  const championship = process.env.FACEIT_CHAMPIONSHIP_ID;
+  try {
+    const { data } = await faceitService.championshipInfo(championship);
+    const teams = data;
+    const couples = await couplesDb.fetch();
+    const users = await userDb.fetch();
+
+    const userFaceitMap = users.reduce((map, user) => {
+      map[user.key] = user.faceit;
+      return map;
+    }, {});
+
+    for (const couple of couples) {
+      couple.team = null;
+
+      const player1Faceit = userFaceitMap[couple.player1];
+      const player2Faceit = userFaceitMap[couple.player2];
+
+      const matchingTeam = teams.find(team => {
+        const teamMembers = team.team.members.map(member => member.nickname);
+        return (
+          teamMembers.includes(player1Faceit) &&
+          teamMembers.includes(player2Faceit) &&
+          player1Faceit !== player2Faceit
+        );
+      });
+
+      if (matchingTeam) {
+        couple.team = matchingTeam.team.name;
+        await couplesDb.put(couple);
+      }
+    }
+
+    res.send({ result: couples });
+  } catch (error) {
+    console.error('Error obtaining Faceit championship info:', error);
+    res.status(500).send('Error obtaining Faceit championship info');
+  }
+};

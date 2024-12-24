@@ -6,6 +6,7 @@ module.exports = function (app) {
   app.get("/api/players", service.getPlayers);
   app.post("/api/faceit", [middleware.verifyToken], service.faceit);
   app.post("/api/faceit/update", [middleware.verifyToken], service.faceitUpdate);
+  app.post("/api/faceit/teams", [middleware.verifyToken], service.faceitTeams);
   app.post("/api/requests/send", [middleware.verifyToken], service.requestCouple);
   app.post("/api/requests/accept", [middleware.verifyToken], service.acceptCouple);
   app.post("/api/requests/decline", [middleware.verifyToken], service.declineCouple);

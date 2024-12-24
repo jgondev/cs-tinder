@@ -29,6 +29,7 @@ export type Request = {
 export type Couple = {
     player1: string;
     player2: string;
+    team: string;
 }
 
 export type PlayersResponse = {

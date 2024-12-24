@@ -89,6 +89,41 @@ class FaceitService {
             throw new Error("Error obtaining Faceit user data.");
         }
     }
+
+    async championshipInfo(championship) {
+        const headers = {
+            "Authorization": `Bearer ${this.config.apiKey}`,
+            "Accept": "application/json",
+            "Accept-Encoding": "identity"
+        };
+
+        try {
+            let allSubscriptions = [];
+            let offset = 0;
+            let moreItems = true;
+
+            while (moreItems) {
+                const response = await axios.get(`${this.config.dataUrl}/championships/${championship}/subscriptions`, {
+                    headers,
+                    params: { offset, limit: 10 }
+                });
+
+                allSubscriptions = [...allSubscriptions, ...response.data.items];
+                moreItems = response.data.items.length === 10;
+                offset += 10;
+            }
+
+            return { data: allSubscriptions };
+        } catch (error) {
+            console.error("Error obtaining Faceit championship data:", {
+                message: error.message,
+                status: error.response?.status,
+                data: error.response?.data
+            });
+            throw new Error("Error obtaining Faceit championship data.");
+        }
+    }
+
 }
 
 module.exports = new FaceitService();

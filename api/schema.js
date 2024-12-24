@@ -18,6 +18,7 @@ const couples = table("couples", {
     key: t.int("key").primaryKey({ autoIncrement: true }),
     player1: t.text("player1"),
     player2: t.text("player2"),
+    team: t.text("team"),
 });
 
 // Tabla de solicitudes

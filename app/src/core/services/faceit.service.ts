@@ -22,6 +22,10 @@ export class FaceitService extends BaseSocialService {
     public async update(): Promise<User> {
         return await apiService.post<User>('/faceit/update');
     }
+
+    public async teams(): Promise<any> {
+        return await apiService.post<any>('/faceit/teams');
+    }
 }
 
 export default new FaceitService();

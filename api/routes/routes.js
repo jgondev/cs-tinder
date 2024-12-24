@@ -1,5 +1,5 @@
-const service = require("./services/api.service");
-const middleware = require("./middleware/auth.middleware");
+const service = require("../services/api.service");
+const middleware = require("../middleware/auth.middleware");
 
 module.exports = function (app) {
   app.post("/api/login", service.login);

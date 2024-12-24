@@ -64,12 +64,13 @@
 import Countdown from '../../components/Countdown.vue';
 import Players from '../../components/Players.vue';
 import MyTeam from '../../components/MyTeam.vue';
-import { onBeforeMount, onBeforeUnmount, onMounted, Ref, ref } from 'vue';
+import { onBeforeMount, onBeforeUnmount, onMounted, Ref, ref, watch } from 'vue';
 import twitchService from '../../core/services/twitch.service';
 import faceitService from '../../core/services/faceit.service';
 import { useIdentityStore } from '../../stores/identity.store';
 import { Couple, Player, PlayersResponse, Request } from '../../core/types';
 import dataService from '../../core/services/data.service';
+import { useSSE } from "../../composables/useSSE";
 
 const id = useIdentityStore();
 
@@ -133,20 +134,12 @@ onBeforeMount(async () => {
     await load();
 });
 
-let timer: any;
-let previous: number;
+const { evt } = useSSE("http://localhost:8080/sse");
 onMounted(() => {
-    timer = setInterval(() => {
-        dataService.latestUpdate().then((latest) => {
-            if (latest > previous) {
-                load();
-            }
-            previous = latest;
-        })
-    }, 5000);
-})
-
-onBeforeUnmount(() => {
-    clearInterval(timer);
-})
+    watch(evt, (newValue) => {
+        if (newValue) {
+            load();
+        }
+    });
+});
 </script>

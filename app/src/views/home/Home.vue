@@ -4,7 +4,7 @@
             <span class="text-4xl">IV Torneo CS2</span>
             <br>
             <span
-                class="text-7xl leading-relaxed bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent drop-shadow-lg">
+                class="text-5xl lg:text-7xl leading-relaxed bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent drop-shadow-lg">
                 El Pueblo
             </span>
         </h1>
@@ -43,7 +43,7 @@
                     <span class="font-bold">{{ id.user.faceit }}</span>
                 </div>
                 <div class="flex flex-row items-center gap-2">
-                    <img class="w-6" :src="`/src/assets/faceit/lvl${+id.user.faceit_level}.svg`" />
+                    <img class="w-6" :src="getLevelImage(+id.user.faceit_level)" />
                     <img class="w-6" src="../../assets/faceit/elo.svg" />
                     <span class="font-bold">{{ +id.user.faceit_elo }}</span>
                     <img class="w-6 hover:rotate-180 transition-tran sform duration-500 cursor-pointer"
@@ -71,6 +71,7 @@ import { useIdentityStore } from '../../stores/identity.store';
 import { Couple, Player, PlayersResponse, Request } from '../../core/types';
 import dataService from '../../core/services/data.service';
 import { useSSE } from "../../composables/useSSE";
+import { getLevelImage } from '../../core/services/media.service';
 
 const id = useIdentityStore();
 
@@ -134,12 +135,19 @@ onBeforeMount(async () => {
     await load();
 });
 
-const { evt } = useSSE("http://localhost:8080/sse");
+const { evt } = useSSE("https://cstinder-api.fly.dev/sse");
 onMounted(() => {
     watch(evt, (newValue) => {
         if (newValue) {
             load();
         }
     });
+
+    console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
+    console.log('VITE_API_SSE_URL:', import.meta.env.VITE_API_SSE_URL);
+    console.log('VITE_FACEIT_REDIRECT_URI:', import.meta.env.VITE_FACEIT_REDIRECT_URI);
+    console.log('VITE_FACEIT_CLIENT_ID:', import.meta.env.VITE_FACEIT_CLIENT_ID);
+    console.log('VITE_TWITCH_REDIRECT_URI:', import.meta.env.VITE_TWITCH_REDIRECT_URI);
+    console.log('VITE_TWITCH_CLIENT_ID:', import.meta.env.VITE_TWITCH_CLIENT_ID);
 });
 </script>

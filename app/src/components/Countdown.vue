@@ -1,25 +1,25 @@
 <template>
     <div class="flex flex-row gap-5 justify-center">
         <div class="flex flex-col items-center">
-            <span class="countdown font-extrabold text-7xl">
+            <span class="countdown font-extrabold text-3xl lg:text-7xl">
                 <span :style="`--value:${countdown.days};`"></span>
             </span>
             días
         </div>
         <div class="flex flex-col items-center">
-            <span class="countdown font-extrabold text-7xl">
+            <span class="countdown font-extrabold text-3xl lg:text-7xl">
                 <span :style="`--value:${countdown.hours};`"></span>
             </span>
             horas
         </div>
         <div class="flex flex-col items-center">
-            <span class="countdown font-extrabold text-7xl">
+            <span class="countdown font-extrabold text-3xl lg:text-7xl">
                 <span :style="`--value:${countdown.minutes};`"></span>
             </span>
             minutos
         </div>
         <div class="flex flex-col items-center">
-            <span class="countdown font-extrabold text-7xl">
+            <span class="countdown font-extrabold text-3xl lg:text-7xl">
                 <span :style="`--value:${countdown.sec};`"></span>
             </span>
             segundos

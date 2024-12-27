@@ -5,10 +5,12 @@ import { onBeforeMount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import faceitService from '../../core/services/faceit.service';
 import { useIdentityStore } from '../../stores/identity.store';
+import { usePlayersStore } from '../../stores/players.store';
 
 const route = useRoute();
 const router = useRouter();
 const identity = useIdentityStore();
+const players = usePlayersStore();
 
 onBeforeMount(async () => {
     try {
@@ -20,7 +22,8 @@ onBeforeMount(async () => {
             }
 
             const id = await faceitService.link(code, codeVerifier);
-            identity.setId(id)
+            identity.setId(id);
+            await players.updatePlayers();
 
             router.push({ name: 'home' });
         }

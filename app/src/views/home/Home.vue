@@ -140,6 +140,6 @@ const twitchUrl = ref<string>();
 onBeforeMount(async () => {
     twitchUrl.value = await twitchService.getAuthorizeUrl('/');
     window.addEventListener('sse-event', load);
-    await load();
+    load();
 });
 </script>

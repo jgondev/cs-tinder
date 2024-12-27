@@ -14,6 +14,7 @@ ENV NODE_ENV="production"
 
 ENV VITE_API_URL="https://cstinder-api.fly.dev/api"
 ENV VITE_API_SSE_URL="https://cstinder-api.fly.dev/sse"
+ENV VITE_API_WS_URL="wss://cstinder-api.fly.dev/ws"
 ENV VITE_FACEIT_REDIRECT_URI="https://cs-tinder.fly.dev/auth/faceit"
 ENV VITE_FACEIT_CLIENT_ID="fead60b0-d55c-4e3a-a323-221b2876721c"
 ENV VITE_TWITCH_REDIRECT_URI="https://cs-tinder.fly.dev/auth/twitch"

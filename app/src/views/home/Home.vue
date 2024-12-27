@@ -64,7 +64,7 @@
         couples: playersStore.players.couples,
         myRequests: myRequests,
         myCouple: myCouple
-    }" @reload="load" />
+    }" @reload="load" :key="JSON.stringify(playersStore.players)" />
 
     <Chat />
 </template>

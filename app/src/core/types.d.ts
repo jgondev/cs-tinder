@@ -36,3 +36,12 @@ export type PlayersResponse = {
     players: Player[];
     couples: Couple[];
 }
+
+export type Message = {
+    id?: string | null
+    sender: string
+    content: string
+    timestamp: number
+    recipient?: string | null
+    type?: 'broadcast' | 'direct'
+}

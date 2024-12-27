@@ -4,7 +4,8 @@ interface EventData {
     [key: string]: any;
 }
 
-export function useSSE(url: string): { evt: Ref<EventData | null> } {
+export function useSSE(): { evt: Ref<EventData | null> } {
+    const url = import.meta.env.VITE_API_SSE_URL;
     const evt = ref<EventData | null>(null);
     const source = new EventSource(url);
 
@@ -12,6 +13,8 @@ export function useSSE(url: string): { evt: Ref<EventData | null> } {
         try {
             const data: EventData = JSON.parse(event.data);
             evt.value = data;
+
+            window.dispatchEvent(new CustomEvent("sse-event", { detail: data }));
         } catch (error) {
             console.error("Error processing SSE event:", error);
         }

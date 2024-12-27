@@ -1,4 +1,4 @@
-const { user, couples, requests, system, tokens } = require("../schema");
+const { user, couples, requests, system, tokens, messages } = require("../schema");
 
 class SchemaService {
     constructor() {
@@ -8,6 +8,7 @@ class SchemaService {
             requests,
             system,
             tokens,
+            messages
         };
     }
 

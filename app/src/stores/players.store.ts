@@ -17,7 +17,6 @@ export const usePlayersStore = defineStore("players", {
         async updatePlayers() {
             const players = await dataService.getPlayers();
             this.setPlayers(players);
-            console.log('Players updated');
         }
     },
 });

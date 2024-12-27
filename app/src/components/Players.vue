@@ -1,6 +1,5 @@
 <template>
-    <div v-if="(players.length > 0)" class="mt-5 w-full bg-base-100 px-3 sm:px-10 py-10 shadow-lg"
-        :class="lock ? 'pointer-events-none opacity-50' : ''">
+    <div v-if="(data.players?.length ?? 0 > 0)" class="mt-5 w-full bg-base-100 px-3 sm:px-10 py-10 shadow-lg">
         <h2 class="text-4xl font-bold mb-10 text-center">Agentes libres</h2>
         <div v-if="singlePlayers.length > 0" class="grid gap-4 grid-cols-4">
             <div v-for="player in singlePlayers"
@@ -54,8 +53,8 @@
             Aún no hay jugadores registrados
         </div>
         <h2 class="text-4xl font-bold mb-10 mt-20 text-center">Equipos</h2>
-        <div v-if="couples.length > 0" class="grid gap-4 grid-cols-4">
-            <div v-for="couple in couples"
+        <div v-if="data.couples?.length ?? 0 > 0" class="grid gap-4 grid-cols-4">
+            <div v-for="couple in data.couples"
                 class="relative col-span-4 lg:col-span-2 p-3 shadow border-orange-900 rounded-sm border-2 border-solid ">
                 <div class="flex flex-row justify-evenly">
                     <div class="player">
@@ -127,21 +126,17 @@ const state = useIdentityStore();
 
 const props = defineProps<{
     data: {
-        playersResponse: PlayersResponse;
+        players: Player[];
+        couples?: Couple[];
         myRequests?: Request[];
         myCouple?: Couple;
     }
 }>();
 
 const emits = defineEmits(["reload"]);
-
-const players: Ref<Player[]> = ref([] as Player[]);
 const singlePlayers: Ref<Player[]> = ref([] as Player[]);
-const couples: Ref<Couple[]> = ref([] as Couple[]);
 
-const lock = ref(false);
-
-const getPlayerById = (id: string): Player | undefined => players.value.find(x => x.id == id);
+const getPlayerById = (id: string): Player | undefined => props.data.players.find(x => x.id == id);
 const shouldShowDuo = (player: Player): boolean => !props.data.myCouple && !props.data.myRequests?.some(req => req.from === player.id || req.to === player.id);
 const shouldShowAccept = (player: Player) => props.data.myRequests?.map(x => x.from).includes(player.id) ?? false;
 const shouldShowCancel = (player: Player): boolean => props.data.myRequests?.map(x => x.to).includes(player.id) ?? false;
@@ -150,7 +145,6 @@ const cancelRequest = (player: Player) => handleRequest(player, "cancel");
 const acceptRequest = (player: Player) => handleRequest(player, "accept");
 
 const handleRequest = async (player: Player, action: "send" | "cancel" | "accept") => {
-    lock.value = true;
     if (action === "send") {
         await dataService.sendRequest(player.id)
     } else if (action === "cancel") {
@@ -163,12 +157,10 @@ const handleRequest = async (player: Player, action: "send" | "cancel" | "accept
 }
 
 onBeforeMount(async () => {
-    couples.value = props.data.playersResponse.couples;
-    players.value = props.data.playersResponse.players;
-    singlePlayers.value = props.data.playersResponse.players
+    singlePlayers.value = props.data.couples && props.data.couples.length > 0 ? props.data.players
         .filter(x =>
-            !couples.value.map(x => x.player1).includes(x.id) &&
-            !couples.value.map(x => x.player2).includes(x.id));
+            !props.data.couples!.map(x => x.player1).includes(x.id) &&
+            !props.data.couples!.map(x => x.player2).includes(x.id)) : props.data.players;
 });
 </script>
 

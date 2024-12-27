@@ -22,7 +22,7 @@ export function useChat() {
 
         ws.onopen = () => {
             isConnected.value = true;
-            console.log("Chat conectado");
+            //console.log("Chat conectado");
 
             // Al abrir, pedimos el historial:
             send({ type: "GET_HISTORY", data: {} });
@@ -64,14 +64,14 @@ export function useChat() {
 
             // Notificaciones de usuarios que entran o salen
             case "USER_JOINED":
-                console.log(`Usuario ${data.userId} ha ingresado`);
+                //console.log(`Usuario ${data.userId} ha ingresado`);
                 break;
             case "USER_LEFT":
-                console.log(`Usuario ${data.userId} salió`);
+                //console.log(`Usuario ${data.userId} salió`);
                 break;
 
             default:
-                console.log("Evento no reconocido:", type, data);
+            //console.log("Evento no reconocido:", type, data);
         }
     }
 
@@ -80,7 +80,7 @@ export function useChat() {
      */
     function send(payload: ChatEvent) {
         if (!wsRef.value || wsRef.value.readyState !== WebSocket.OPEN) {
-            console.warn("WS no abierto, no se puede enviar:", payload);
+            //console.warn("WS no abierto, no se puede enviar:", payload);
             return;
         }
         wsRef.value.send(JSON.stringify(payload));

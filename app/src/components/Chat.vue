@@ -10,13 +10,10 @@
         <div class="fixed top-0 right-0 h-full w-72 bg-base-100 shadow-lg transform transition-transform z-40 border-l-2 border-orange-700"
             :class="{ 'translate-x-0': isDrawerOpen, 'translate-x-full': !isDrawerOpen }">
             <div class="p-4 flex flex-col h-full text-sm">
-                <!-- Cabecera -->
                 <h2 class="text-lg font-bold mb-2">Chat</h2>
 
-                <!-- Sección de mensajes -->
                 <div class="flex-1 overflow-y-auto mb-2">
                     <div v-for="(msg, i) in messages" :key="i" class="mb-1 flex items-center">
-                        <!-- Distinción visual: si es "mío" o de otro -->
                         <img :src="getAsset('/twitch.svg')" alt="icon" class="w-4 h-4 mr-1" />
                         <div>
                             <strong :style="`color: ${twitchColors(msg.sender)}`">{{ msg.sender }}:</strong>
@@ -25,7 +22,6 @@
                     </div>
                 </div>
 
-                <!-- Barra de envío -->
                 <hr class="border-t border-orange-900 my-2" />
                 <div class="flex mt-2 flex-col gap-2 items-end">
                     <input v-model="newMessage" placeholder="Escribe un mensaje..."
@@ -50,8 +46,8 @@ import { getAsset } from '../core/services/media.service';
 import { useIdentityStore } from '../stores/identity.store';
 
 // 2) Extraer datos de la store
-const identityStore = useIdentityStore();
-const { loggedIn, user } = storeToRefs(identityStore);
+const id = useIdentityStore();
+const { loggedIn, user } = storeToRefs(id);
 
 // 3) Chat composable
 const { messages, connect, sendMessage } = useChat();
@@ -62,20 +58,15 @@ const newMessage = ref('');
 
 // 5) Abrimos la conexión WS solo si el usuario está logueado
 onMounted(() => {
-    // Si tu composable obtiene el token de localStorage directamente, 
-    // basta con llamar a connect().
-    // (O, si prefieres, pasa el token como param: connect(token))
     if (loggedIn.value) {
         connect();
     }
 });
 
-// Lógica para drawer
 function toggleDrawer() {
     isDrawerOpen.value = !isDrawerOpen.value;
 }
 
-// Enviar mensaje
 function onSend() {
     if (!newMessage.value.trim()) return;
     sendMessage(newMessage.value);

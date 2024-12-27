@@ -13,7 +13,6 @@ export function useSSE(): { evt: Ref<EventData | null> } {
         try {
             const data: EventData = JSON.parse(event.data);
             evt.value = data;
-
             window.dispatchEvent(new CustomEvent("sse-event", { detail: data }));
         } catch (error) {
             console.error("Error processing SSE event:", error);

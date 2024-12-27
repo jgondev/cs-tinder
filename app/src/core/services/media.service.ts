@@ -1,15 +1,16 @@
-// /src/core/services/media.service.ts
-const levelImages: Record<string, { default: string }> = import.meta.glob(
-    '../../assets/faceit/lvl*.svg',
+// Importa todas las rutas dentro de assets
+const allAssets: Record<string, { default: string }> = import.meta.glob(
+    '../../assets/**/*',
     { eager: true }
 );
 
-/**
- * Obtiene la ruta de la imagen correspondiente al nivel del jugador.
- * @param level Nivel del jugador
- * @returns Ruta de la imagen
- */
 export const getLevelImage = (level: number): string => {
     const path = `../../assets/faceit/lvl${level}.svg`;
-    return levelImages[path]?.default || ''; // Devuelve la imagen o una cadena vacía si no existe
+    return allAssets[path]?.default || ''; // Devuelve la imagen o una cadena vacía si no existe
 };
+
+export const getAsset = (path: string): string => {
+    const fullPath = `../../assets${path}`; // Elimina la barra inicial de path
+    return allAssets[fullPath]?.default || ''; // Devuelve la ruta válida o una cadena vacía
+};
+

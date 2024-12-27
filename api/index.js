@@ -1,8 +1,13 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const WebSockets = require("express-ws");
+const mainRoutes = require("./routes/main.routes");
+const sseRoutes = require("./routes/sse.routes");
+const wsRoutes = require("./routes/ws.routes");
 
 const app = express();
+WebSockets(app);
 app.use(express.json());
 const port = process.env.PORT || 8080;
 app.use(cors({
@@ -11,11 +16,9 @@ app.use(cors({
 }));
 
 //routes
-require("./routes/routes")(app);
-
-// SSE routes
-const sseRoutes = require("./routes/sse");
-app.use("/sse", sseRoutes);
+mainRoutes(app);
+sseRoutes(app);
+wsRoutes(app);
 
 app.get("/", (req, res) => {
   res.send("Bienvenido! 🚀");

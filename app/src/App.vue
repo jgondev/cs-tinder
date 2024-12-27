@@ -7,4 +7,18 @@
           target="_blank">tronkomovil</a></div>
     </div>
   </div>
+  <Chat />
 </template>
+
+<script setup lang="ts">
+import Chat from './components/Chat.vue';
+import { useSSE } from "./composables/useSSE";
+import { usePlayersStore } from './stores/players.store';
+
+useSSE();
+const players = usePlayersStore();
+
+window.addEventListener('sse-event', () => {
+  players.updatePlayers();
+})
+</script>

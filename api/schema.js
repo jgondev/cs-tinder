@@ -40,10 +40,19 @@ const tokens = table("tokens", {
     token: t.text("token"),
 });
 
+const messages = table("messages", {
+    id: t.int("id").primaryKey({ autoIncrement: true }),
+    sender: t.text("sender"),
+    content: t.text("content"),
+    timestamp: t.int("timestamp"),
+    recipient: t.text("recipient"),
+});
+
 module.exports = {
     user,
     couples,
     requests,
     system,
     tokens,
+    messages
 };

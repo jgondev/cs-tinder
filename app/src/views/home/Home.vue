@@ -64,16 +64,17 @@
 import Countdown from '../../components/Countdown.vue';
 import Players from '../../components/Players.vue';
 import MyTeam from '../../components/MyTeam.vue';
-import { onBeforeMount, onBeforeUnmount, onMounted, Ref, ref, watch } from 'vue';
+import { onBeforeMount, Ref, ref } from 'vue';
 import twitchService from '../../core/services/twitch.service';
 import faceitService from '../../core/services/faceit.service';
 import { useIdentityStore } from '../../stores/identity.store';
+import { usePlayersStore } from '../../stores/players.store';
 import { Couple, Player, PlayersResponse, Request } from '../../core/types';
 import dataService from '../../core/services/data.service';
-import { useSSE } from "../../composables/useSSE";
 import { getLevelImage } from '../../core/services/media.service';
 
 const id = useIdentityStore();
+const players = usePlayersStore();
 
 const playersResponse: Ref<PlayersResponse | undefined> = ref();
 const myRequests: Ref<Request[] | undefined> = ref();
@@ -88,8 +89,9 @@ const playersData: Ref<{
     myRequests?: Request[];
     myCouple?: Couple;
 } | undefined> = ref();
+
 const load = async () => {
-    playersResponse.value = await dataService.getPlayers();
+    playersResponse.value = players.players;
     myRequests.value = id.loggedIn ? await dataService.getRequests() : undefined;
     myCouple.value = id.loggedIn ? await dataService.getCouple() : undefined;
     myTeamData.value = {
@@ -132,22 +134,7 @@ const gg = async () => {
 const twitchUrl = ref();
 onBeforeMount(async () => {
     twitchUrl.value = await twitchService.getAuthorizeUrl('/');
-    await load();
-});
-
-const { evt } = useSSE("https://cstinder-api.fly.dev/sse");
-onMounted(() => {
-    watch(evt, (newValue) => {
-        if (newValue) {
-            load();
-        }
-    });
-
-    console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
-    console.log('VITE_API_SSE_URL:', import.meta.env.VITE_API_SSE_URL);
-    console.log('VITE_FACEIT_REDIRECT_URI:', import.meta.env.VITE_FACEIT_REDIRECT_URI);
-    console.log('VITE_FACEIT_CLIENT_ID:', import.meta.env.VITE_FACEIT_CLIENT_ID);
-    console.log('VITE_TWITCH_REDIRECT_URI:', import.meta.env.VITE_TWITCH_REDIRECT_URI);
-    console.log('VITE_TWITCH_CLIENT_ID:', import.meta.env.VITE_TWITCH_CLIENT_ID);
+    window.addEventListener("sse-event", load);
+    load();
 });
 </script>

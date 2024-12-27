@@ -58,12 +58,14 @@
 
     <MyTeam v-if="(id.loggedIn && myTeamData)" :data="myTeamData" @reload="load" :key="JSON.stringify(myTeamData)" />
     <Players v-if="playersData" :data="playersData" :key="JSON.stringify(playersData)" @reload="load" />
+    <Chat />
 </template>
 
 <script setup lang="ts">
 import Countdown from '../../components/Countdown.vue';
 import Players from '../../components/Players.vue';
 import MyTeam from '../../components/MyTeam.vue';
+import Chat from '../../components/Chat.vue';
 import { onBeforeMount, Ref, ref } from 'vue';
 import twitchService from '../../core/services/twitch.service';
 import faceitService from '../../core/services/faceit.service';
